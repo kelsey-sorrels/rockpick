@@ -1,6 +1,6 @@
 # rockpick
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library designed to read REXPaint .xp files into plain old Clojure datastructures.
 
 ## Usage
 ```clojure
