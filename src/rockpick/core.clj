@@ -60,7 +60,7 @@
                                            (map (fn [tile]
                                                   (let [[ch _ _ _ fg-r fg-g fg-b bg-r bg-g bg-b] tile]
                                                     #_(println "got tile" (count tile) "bytes")
-                                                    {:ch (char ch)
+                                                    {:ch (char (byte->int ch))
                                                      :fg {:r (byte->int fg-r) :g (byte->int fg-g) :b (byte->int fg-b)}
                                                      :bg {:r (byte->int bg-r) :g (byte->int bg-g) :b (byte->int bg-b)}}))
                                                 (split-into height column)))
