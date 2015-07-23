@@ -18,6 +18,10 @@
   [n coll]
   (partition (/ (count coll) n) coll))
 
+(defn transpose
+  [m]
+  (apply mapv vector m))
+
 ;; Open the file at path and convert it to a collection of layers.
 ;; Each layer is a list of rows and each row is a list of tiles.
 ;; Each tile is a map containing the keys :ch :fg :bg.
@@ -52,12 +56,12 @@
         #_ (println "read" (count tile-data) "bytes of tile data")
         tile-size          10 ;bytes
         #_ (println "tile-size" tile-size "bytes")
-        layers             (map (fn [layer]
+        layers             (mapv (fn [layer]
                                   #_(println "got layer" (count layer) "bytes")
-                                  (apply interleave
-                                    (map (fn [column]
+                                  (transpose
+                                    (mapv (fn [column]
                                            #_(println "got column" (count column) "bytes")
-                                           (map (fn [tile]
+                                           (mapv (fn [tile]
                                                   (let [[ch _ _ _ fg-r fg-g fg-b bg-r bg-g bg-b] tile]
                                                     #_(println "got tile" (count tile) "bytes")
                                                     {:ch (char (byte->int ch))
