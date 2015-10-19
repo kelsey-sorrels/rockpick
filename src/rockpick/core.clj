@@ -46,29 +46,28 @@
         #_ (println "layer-count" layer-count)
         layer-width-offset (/ (+ 32 (* 8 layer-count-offset)) 8)
         width              (read-int32 data layer-width-offset)
-        #_ (println "width" width)
-        layer-height-offset (/ (+ (* 8 layer-count-offset) 32 32) 8)
-        height              (read-int32 data layer-height-offset)
-        #_ (println "height" height)
-        first-tile-offset  (/ (+ (* layer-count-offset 8) (* layer-count 64) 32) 8)
-        #_ (println "first-tile-offset" first-tile-offset)
-        tile-data          (drop first-tile-offset data)
+        tile-data          (drop (+ layer-count-offset 4) data)
         #_ (println "read" (count tile-data) "bytes of tile data")
         tile-size          10 ;bytes
         #_ (println "tile-size" tile-size "bytes")
         layers             (mapv (fn [layer]
                                   #_(println "got layer" (count layer) "bytes")
-                                  (transpose
-                                    (mapv (fn [column]
-                                           #_(println "got column" (count column) "bytes")
-                                           (mapv (fn [tile]
-                                                  (let [[ch _ _ _ fg-r fg-g fg-b bg-r bg-g bg-b] tile]
-                                                    #_(println "got tile" (count tile) "bytes")
-                                                    {:ch (char (byte->int ch))
-                                                     :fg {:r (byte->int fg-r) :g (byte->int fg-g) :b (byte->int fg-b)}
-                                                     :bg {:r (byte->int bg-r) :g (byte->int bg-g) :b (byte->int bg-b)}}))
-                                                (split-into height column)))
-                                         (split-into width layer))))
+                                  (let [width  (read-int32 layer 0)
+                                        height (read-int32 layer 4)
+                                        layer-data (drop 8 layer)]
+                                    #_(println "width" width)
+                                    #_(println "height" height)
+                                    (transpose
+                                      (mapv (fn [column]
+                                             #_(println "got column" (count column) "bytes")
+                                             (mapv (fn [tile]
+                                                    (let [[ch _ _ _ fg-r fg-g fg-b bg-r bg-g bg-b] tile]
+                                                      #_(println "got tile" (count tile) "bytes [" (clojure.string/join " " tile) "]")
+                                                      {:ch (char (byte->int ch))
+                                                       :fg {:r (byte->int fg-r) :g (byte->int fg-g) :b (byte->int fg-b)}
+                                                       :bg {:r (byte->int bg-r) :g (byte->int bg-g) :b (byte->int bg-b)}}))
+                                                  (split-into height column)))
+                                           (split-into width layer-data)))))
                                 (split-into layer-count tile-data))]
     layers))
 
