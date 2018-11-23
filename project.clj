@@ -1,4 +1,4 @@
-(defproject rockpick "0.1.0-SNAPSHOT"
+(defproject rockpick "0.1.0"
   :description "A library for reading REXPaint .xp files"
   :url "http://github.com/aaron-santos/rockpick"
   :license {:name "GNU LESSER GENERAL PUBLIC LICENSE"
